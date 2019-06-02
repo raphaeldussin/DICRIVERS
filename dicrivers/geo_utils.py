@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.ndimage as si
 
 
 def find_closest_ocean_cell_to_river_mouth(lon_river, lat_river,
@@ -67,3 +68,65 @@ def find_closest_ocean_cell_to_river_mouth(lon_river, lat_river,
         jmouth = None
         imouth = None
     return jmouth, imouth
+
+
+def create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,
+                 rspread=10, nitermax=1000):
+    """ create the plume for the river at imouth, jmouth with selected
+    spreading.
+    Parameters
+    ----------
+    imouth : integer
+        index of river mouth in x
+    jmouth : integer
+        index of river mouth in y
+    lon_grid : np.array
+        longitude of ocean grid
+    lat_grid : np.array
+        latitude of ocean grid
+    mask_grid : np.array
+        land/sea mask of ocean grid
+    rspread : integer
+        number of gridpoints for spreading the plume
+    nitermax : integer
+        maximum number of iterations for spreading algo
+    Returns
+    -------
+    plume : np.array
+        binary mask of same dimensions of mask_grid that is equal to one
+        where the plume is, zero elsewhere.
+    """
+
+    #  initialize plume
+    plume = np.zeros(mask_grid.shape)
+    plume[jmouth, imouth] = 1
+
+    #  for computational efficiency, we used subsets
+    # to +/- rspread in both directions
+    imin = max(0, imouth - rspread)
+    jmin = max(0, jmouth - rspread)
+    imax = min(imouth+rspread+1, -1)
+    jmax = min(jmouth+rspread+1, -1)
+
+    mask_zoom = mask_grid[jmin:jmax, imin:imax]
+    plume_zoom = plume[jmin:jmax, imin:imax]
+
+    #  run an iterative loop to spread the plume
+    #  init array
+    plume_zoom_old = plume_zoom.copy()
+
+    for kk in np.arange(nitermax):
+        #  use binary dilatation to spread plume
+        plume_zoom_new = si.binary_dilation(plume_zoom_old)
+        #  correct spreading with land/sea mask
+        plume_zoom_new = plume_zoom_new * mask_zoom
+        #  stop if we converged
+        if (plume_zoom_new == plume_zoom_old).all():
+            break
+        # update array
+        plume_zoom_old = plume_zoom_new.copy()
+
+        # go back to full size array
+        plume[jmin:jmax, imin:imax] = plume_zoom_new
+
+    return plume
