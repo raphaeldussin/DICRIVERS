@@ -94,3 +94,38 @@ def test_find_closest_ocean_cell_to_river_mouth(datafiles):
 
     # mask still needs testing
     return None
+
+
+def test_create_plume(datafiles):
+    '''unit test'''
+    from dicrivers.geo_utils import find_closest_ocean_cell_to_river_mouth
+    from dicrivers.geo_utils import create_plume
+
+    rivers = pd.read_csv(FIXTURE_DIR + '20major_rivers.csv')
+    # -------------------------------------------------------------------------
+    # regular global grid 0 - 180
+    lon_grid, lat_grid = np.meshgrid(np.arange(-180, 180, 1),
+                                     np.arange(-90, 90, 1))
+    mask_grid = np.ones(lon_grid.shape)
+
+    # check Mississippi is there
+    Mississippi = rivers.loc[rivers['basinname'] == 'Mississippi']
+    lon_miss = Mississippi['mouth_lon'].values
+    lat_miss = Mississippi['mouth_lat'].values
+
+    jmouth, imouth = find_closest_ocean_cell_to_river_mouth(lon_miss,
+                                                            lat_miss,
+                                                            lon_grid,
+                                                            lat_grid,
+                                                            mask_grid)
+
+    rspread = 10
+    nitermax = 1000
+    plume = create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,
+                         rspread=rspread, nitermax=nitermax)
+
+    assert(isinstance(plume, np.ndarray))
+    #  test for min/max values in the no-mask case
+    assert(plume.sum() > 1)
+    assert(plume.sum() < (2*rspread+1)**2 + 1)
+    return None
