@@ -98,16 +98,18 @@ def create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,
     """
 
     #  initialize plume
-    plume = np.zeros(mask_grid.shape)
+    ny, nx = mask_grid.shape
+    plume = np.zeros((ny, nx))
     plume[jmouth, imouth] = 1
 
     #  for computational efficiency, we used subsets
     # to +/- rspread in both directions
     imin = max(0, imouth - rspread)
     jmin = max(0, jmouth - rspread)
-    imax = min(imouth+rspread+1, -1)
-    jmax = min(jmouth+rspread+1, -1)
+    imax = min(imouth+rspread+1, nx)
+    jmax = min(jmouth+rspread+1, ny)
 
+    print(imin, imax, jmin, jmax)
     mask_zoom = mask_grid[jmin:jmax, imin:imax]
     plume_zoom = plume[jmin:jmax, imin:imax]
 
