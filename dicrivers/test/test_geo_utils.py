@@ -1,0 +1,96 @@
+import pandas as pd
+import os
+import numpy as np
+# requires pytest-datafiles
+
+
+FIXTURE_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    'data/',
+    )
+
+
+def test_find_closest_ocean_cell_to_river_mouth(datafiles):
+    'unit test'
+    from dicrivers.geo_utils import find_closest_ocean_cell_to_river_mouth
+    rivers = pd.read_csv(FIXTURE_DIR + '20major_rivers.csv')
+    print(rivers)
+
+    # -------------------------------------------------------------------------
+    # regular global grid 0 - 360
+    lon_grid, lat_grid = np.meshgrid(np.arange(0, 360, 1),
+                                     np.arange(-90, 90, 1))
+    mask_grid = np.ones(lon_grid.shape)
+
+    for index, river in rivers.iterrows():
+        print(river)
+        print(river['mouth_lon'], river['mouth_lat'])
+        lon_river = river['mouth_lon']
+        lat_river = river['mouth_lat']
+        jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_river,
+                                                              lat_river,
+                                                              lon_grid,
+                                                              lat_grid,
+                                                              mask_grid)
+        print(jcell, icell)
+        # grid resolution is one degree, error should be < 1 deg
+        lon_river_360 = np.mod(lon_river+360, 360)
+        assert(np.abs(lon_grid[jcell, icell] - lon_river_360) < 1)
+        assert(np.abs(lat_grid[jcell, icell] - lat_river) < 1)
+
+    # -------------------------------------------------------------------------
+    # regular global grid 0 - 180
+    lon_grid, lat_grid = np.meshgrid(np.arange(-180, 180, 1),
+                                     np.arange(-90, 90, 1))
+    mask_grid = np.ones(lon_grid.shape)
+
+    for index, river in rivers.iterrows():
+        print(river)
+        print(river['mouth_lon'], river['mouth_lat'])
+        lon_river = river['mouth_lon']
+        lat_river = river['mouth_lat']
+        jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_river,
+                                                              lat_river,
+                                                              lon_grid,
+                                                              lat_grid,
+                                                              mask_grid)
+        print(jcell, icell)
+        # grid resolution is one degree, error should be < 1 deg
+        assert(np.abs(lon_grid[jcell, icell] - lon_river) < 1)
+        assert(np.abs(lat_grid[jcell, icell] - lat_river) < 1)
+
+    # -------------------------------------------------------------------------
+    # regional grid
+    lon_grid, lat_grid = np.meshgrid(np.arange(-120, 30, 0.25),
+                                     np.arange(10, 70, 0.25))
+    mask_grid = np.ones(lon_grid.shape)
+
+    # check Mississippi is there
+    Mississippi = rivers.loc[rivers['basinname'] == 'Mississippi']
+    lon_miss = Mississippi['mouth_lon'].values
+    lat_miss = Mississippi['mouth_lat'].values
+
+    jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_miss,
+                                                          lat_miss,
+                                                          lon_grid,
+                                                          lat_grid,
+                                                          mask_grid)
+    assert(jcell is not None)
+    assert(icell is not None)
+
+    # but amazon is not
+    Amazon = rivers.loc[rivers['basinname'] == 'Amazon']
+    lon_ama = Amazon['mouth_lon'].values
+    lat_ama = Amazon['mouth_lat'].values
+
+    jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_ama,
+                                                          lat_ama,
+                                                          lon_grid,
+                                                          lat_grid,
+                                                          mask_grid)
+
+    assert(jcell is None)
+    assert(icell is None)
+
+    # mask still needs testing
+    return None
