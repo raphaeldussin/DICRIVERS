@@ -27,16 +27,16 @@ def test_find_closest_ocean_cell_to_river_mouth(datafiles):
         print(river['mouth_lon'], river['mouth_lat'])
         lon_river = river['mouth_lon']
         lat_river = river['mouth_lat']
-        jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_river,
-                                                              lat_river,
-                                                              lon_grid,
-                                                              lat_grid,
-                                                              mask_grid)
-        print(jcell, icell)
+        jmouth, imouth = find_closest_ocean_cell_to_river_mouth(lon_river,
+                                                                lat_river,
+                                                                lon_grid,
+                                                                lat_grid,
+                                                                mask_grid)
+        print(jmouth, imouth)
         # grid resolution is one degree, error should be < 1 deg
         lon_river_360 = np.mod(lon_river+360, 360)
-        assert(np.abs(lon_grid[jcell, icell] - lon_river_360) < 1)
-        assert(np.abs(lat_grid[jcell, icell] - lat_river) < 1)
+        assert(np.abs(lon_grid[jmouth, imouth] - lon_river_360) < 1)
+        assert(np.abs(lat_grid[jmouth, imouth] - lat_river) < 1)
 
     # -------------------------------------------------------------------------
     # regular global grid 0 - 180
@@ -49,15 +49,15 @@ def test_find_closest_ocean_cell_to_river_mouth(datafiles):
         print(river['mouth_lon'], river['mouth_lat'])
         lon_river = river['mouth_lon']
         lat_river = river['mouth_lat']
-        jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_river,
-                                                              lat_river,
-                                                              lon_grid,
-                                                              lat_grid,
-                                                              mask_grid)
-        print(jcell, icell)
+        jmouth, imouth = find_closest_ocean_cell_to_river_mouth(lon_river,
+                                                                lat_river,
+                                                                lon_grid,
+                                                                lat_grid,
+                                                                mask_grid)
+        print(jmouth, imouth)
         # grid resolution is one degree, error should be < 1 deg
-        assert(np.abs(lon_grid[jcell, icell] - lon_river) < 1)
-        assert(np.abs(lat_grid[jcell, icell] - lat_river) < 1)
+        assert(np.abs(lon_grid[jmouth, imouth] - lon_river) < 1)
+        assert(np.abs(lat_grid[jmouth, imouth] - lat_river) < 1)
 
     # -------------------------------------------------------------------------
     # regional grid
@@ -70,27 +70,27 @@ def test_find_closest_ocean_cell_to_river_mouth(datafiles):
     lon_miss = Mississippi['mouth_lon'].values
     lat_miss = Mississippi['mouth_lat'].values
 
-    jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_miss,
-                                                          lat_miss,
-                                                          lon_grid,
-                                                          lat_grid,
-                                                          mask_grid)
-    assert(jcell is not None)
-    assert(icell is not None)
+    jmouth, imouth = find_closest_ocean_cell_to_river_mouth(lon_miss,
+                                                            lat_miss,
+                                                            lon_grid,
+                                                            lat_grid,
+                                                            mask_grid)
+    assert(jmouth is not None)
+    assert(imouth is not None)
 
     # but amazon is not
     Amazon = rivers.loc[rivers['basinname'] == 'Amazon']
     lon_ama = Amazon['mouth_lon'].values
     lat_ama = Amazon['mouth_lat'].values
 
-    jcell, icell = find_closest_ocean_cell_to_river_mouth(lon_ama,
-                                                          lat_ama,
-                                                          lon_grid,
-                                                          lat_grid,
-                                                          mask_grid)
+    jmouth, imouth = find_closest_ocean_cell_to_river_mouth(lon_ama,
+                                                            lat_ama,
+                                                            lon_grid,
+                                                            lat_grid,
+                                                            mask_grid)
 
-    assert(jcell is None)
-    assert(icell is None)
+    assert(jmouth is None)
+    assert(imouth is None)
 
     # mask still needs testing
     return None

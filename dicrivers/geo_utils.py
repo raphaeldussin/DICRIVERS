@@ -23,11 +23,11 @@ def find_closest_ocean_cell_to_river_mouth(lon_river, lat_river,
     mask_grid : np.array
         land/sea mask of ocean grid
     proximity_range : float
-        acceptable maximum distance (in km) between cell and true
+        acceptable maximum distance (in km) between gridcell and true
         river location
     Returns
     -------
-    jcell, icell : integer
+    jmouth, imouth : integer
         coordinates of river mouth in grid
     '''
     # Convert latitude and longitude to
@@ -55,15 +55,15 @@ def find_closest_ocean_cell_to_river_mouth(lon_river, lat_river,
     # in your favorite set of units to get length.
     arc[np.where(mask_grid == 0)] = 1.e36
 
-    jcell, icell = np.unravel_index(arc.argmin(), lon_grid.shape)
-    jcell = int(jcell)
-    icell = int(icell)
+    jmouth, imouth = np.unravel_index(arc.argmin(), lon_grid.shape)
+    jmouth = int(jmouth)
+    imouth = int(imouth)
     # check that we don't fall on a land cell
-    assert(mask_grid[jcell, icell] == 1)
+    assert(mask_grid[jmouth, imouth] == 1)
     # filter out points that do not belong to lat_grid,
     # i.e. are farther away than a few grid cells
     threshold = proximity_range / rearth
     if arc.min() > threshold:  # proximity threshold exceeded
-        jcell = None
-        icell = None
-    return jcell, icell
+        jmouth = None
+        imouth = None
+    return jmouth, imouth
