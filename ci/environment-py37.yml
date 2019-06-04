@@ -4,7 +4,7 @@ dependencies:
   - xarray
   - numpy
   - pytest
-  - esmpy
+  - scipy
   - pandas
   - pip:
     - pytest-datafiles

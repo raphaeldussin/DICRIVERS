@@ -6,7 +6,7 @@ dependencies:
   - xarray
   - numpy
   - pytest
-  - esmpy
+  - scipy
   - pandas
   - netcdf4
   - pip:
