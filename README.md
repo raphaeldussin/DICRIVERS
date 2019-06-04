@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/raphaeldussin/DICRIVERS.svg?branch=master)](https://travis-ci.org/raphaeldussin/DICRIVERS)
+
 # DICRIVERS
 A preprocessing tool to specify river biogeochemistry input for ocean models
 
