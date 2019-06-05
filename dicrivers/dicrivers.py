@@ -68,10 +68,11 @@ def make_bgc_river_input_file(river_df, variables,
                                                                 lat_grid,
                                                                 mask_grid)
         # create the plume (mask for this particular river)
-        plume = create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,
-                             rspread=river['rspread'], nitermax=nitermax)
+        if (jmouth is not None) and (imouth is not None):
+            plume = create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,
+                                 rspread=river['rspread'], nitermax=nitermax)
 
-        river_plumes.loc[{'river': index}] = plume
+            river_plumes.loc[{'river': index}] = plume
 
     # add dataarray to Dataset
     ds_rivers = xr.Dataset({'river_plumes': river_plumes})
