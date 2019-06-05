@@ -11,6 +11,7 @@ DICRIVERS: Proudly creating BGC river concentration gridded files since 2019
    :caption: Contents:
 
    install
+   dicrivers_example_global_mom6
 
 
 Indices and tables
