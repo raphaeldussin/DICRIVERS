@@ -11,9 +11,9 @@ FIXTURE_DIR = os.path.join(
     )
 
 
-def test_make_bgc_river_input_file(datafiles):
+def test_make_bgc_river_input(datafiles):
     'unit test'
-    from dicrivers import make_bgc_river_input_file
+    from dicrivers import make_bgc_river_input
     rivers = pd.read_csv(FIXTURE_DIR + '20major_rivers.csv')
 
     # -------------------------------------------------------------------------
@@ -23,12 +23,12 @@ def test_make_bgc_river_input_file(datafiles):
     mask_grid = np.ones(lon_grid.shape)
 
     variables = ['testvar']
-    out = make_bgc_river_input_file(rivers, variables,
-                                    lon_grid, lat_grid, mask_grid,
-                                    lon_mouth_name='mouth_lon',
-                                    lat_mouth_name='mouth_lat',
-                                    nitermax=1000,
-                                    method='average')
+    out = make_bgc_river_input(rivers, variables,
+                               lon_grid, lat_grid, mask_grid,
+                               lon_mouth_name='mouth_lon',
+                               lat_mouth_name='mouth_lat',
+                               nitermax=1000,
+                               method='average')
 
     assert(isinstance(out, xr.Dataset))
     assert(isinstance(out['testvar'], xr.DataArray))
@@ -42,12 +42,12 @@ def test_make_bgc_river_input_file(datafiles):
     mask_grid = np.ones(lon_grid.shape)
 
     variables = ['testvar']
-    out = make_bgc_river_input_file(rivers, variables,
-                                    lon_grid, lat_grid, mask_grid,
-                                    lon_mouth_name='mouth_lon',
-                                    lat_mouth_name='mouth_lat',
-                                    nitermax=1000,
-                                    method='average')
+    out = make_bgc_river_input(rivers, variables,
+                               lon_grid, lat_grid, mask_grid,
+                               lon_mouth_name='mouth_lon',
+                               lat_mouth_name='mouth_lat',
+                               nitermax=1000,
+                               method='average')
 
     assert(isinstance(out, xr.Dataset))
     assert(isinstance(out['testvar'], xr.DataArray))

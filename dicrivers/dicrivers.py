@@ -5,12 +5,13 @@ from dicrivers.geo_utils import find_closest_ocean_cell_to_river_mouth
 from dicrivers.geo_utils import create_plume
 
 
-def make_bgc_river_input_file(river_df, variables,
-                              lon_grid, lat_grid, mask_grid,
-                              lon_mouth_name='mouth_lon',
-                              lat_mouth_name='mouth_lat',
-                              nitermax=1000,
-                              method='average'):
+def make_bgc_river_input(river_df, variables,
+                         lon_grid, lat_grid, mask_grid,
+                         lon_mouth_name='mouth_lon',
+                         lat_mouth_name='mouth_lat',
+                         nitermax=1000,
+                         method='average',
+                         prox=200.):
     """ create river bgc concentration file
     Parameters
     ----------
@@ -31,6 +32,11 @@ def make_bgc_river_input_file(river_df, variables,
         name of river mouth latitude in dataframe
     nitermax : integer
         maximum iterations allowed for convergence
+    method : string
+        merging method for plumes (available: 'average')
+    prox : float
+        acceptable maximum distance (in km) between gridcell and true
+        river location
     Returns
     -------
     river_conc : xarray.Dataset
@@ -66,7 +72,8 @@ def make_bgc_river_input_file(river_df, variables,
                                                                 lat_river,
                                                                 lon_grid,
                                                                 lat_grid,
-                                                                mask_grid)
+                                                                mask_grid,
+                                                                prox=prox)
         # create the plume (mask for this particular river)
         if (jmouth is not None) and (imouth is not None):
             plume = create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,

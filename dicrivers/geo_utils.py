@@ -1,10 +1,11 @@
 import numpy as np
 import scipy.ndimage as si
+import warnings
 
 
 def find_closest_ocean_cell_to_river_mouth(lon_river, lat_river,
                                            lon_grid, lat_grid, mask_grid,
-                                           proximity_range=200.):
+                                           prox=200.):
     '''find grid's closest ocean grid point to true geographical location
     of river mouth by computing distance to the true location and finding
     minimum of array. Land points are set to very large value to exclude them.
@@ -23,7 +24,7 @@ def find_closest_ocean_cell_to_river_mouth(lon_river, lat_river,
         latitude of ocean grid
     mask_grid : np.array
         land/sea mask of ocean grid
-    proximity_range : float
+    prox : float
         acceptable maximum distance (in km) between gridcell and true
         river location
     Returns
@@ -63,8 +64,13 @@ def find_closest_ocean_cell_to_river_mouth(lon_river, lat_river,
     assert(mask_grid[jmouth, imouth] == 1)
     # filter out points that do not belong to lat_grid,
     # i.e. are farther away than a few grid cells
-    threshold = proximity_range / rearth
+    threshold = prox / rearth
     if arc.min() > threshold:  # proximity threshold exceeded
+        print('river mouth at (lon,lat) = (%f,%f) ' % (lon_river, lat_river))
+        print('is too far from the ocean and cannot not used.')
+        print('It can be out of the domain (regional case) or flowing into')
+        print('an unresolved lake or sea. If you know that river should be')
+        print('there, you may need to increase the proximity range (prox)')
         jmouth = None
         imouth = None
     return jmouth, imouth
@@ -109,7 +115,6 @@ def create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,
     imax = min(imouth+rspread+1, nx)
     jmax = min(jmouth+rspread+1, ny)
 
-    print(imin, imax, jmin, jmax)
     mask_zoom = mask_grid[jmin:jmax, imin:imax]
     plume_zoom = plume[jmin:jmax, imin:imax]
 
@@ -127,6 +132,9 @@ def create_plume(imouth, jmouth, lon_grid, lat_grid, mask_grid,
             break
         # update array
         plume_zoom_old = plume_zoom_new.copy()
+        # WARNING: did not converge
+        if kk == nitermax-1:
+            warnings.warn('plume spreading did not converge')
 
         # go back to full size array
         plume[jmin:jmax, imin:imax] = plume_zoom_new
