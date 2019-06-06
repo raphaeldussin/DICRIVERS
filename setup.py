@@ -1,9 +1,9 @@
 ''' setup for dicrivers '''
-from numpy.distutils.core import setup
+import setuptools
 
-setup(
+setuptools.setup(
     name="dicrivers",
-    version="0.0",
+    version="0.1.0",
     author="Raphael Dussin",
     author_email="raphael.dussin@gmail.com",
     description=("A package to create bgc river inputs for ocean models"),

@@ -8,6 +8,13 @@ Requirements
 
     conda install numpy scipy pandas xarray
 
+Installation from pip
+^^^^^^^^^^^^^^^^^^^^^
+
+Stable release from pip::
+
+   pip install dicrivers
+
 Installation from github
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
