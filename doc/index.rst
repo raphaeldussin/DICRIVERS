@@ -27,6 +27,7 @@ each given river. Principal features:
    install
    dicrivers_example_global_mom6
    dicrivers_example_regional_ROMS
+   dicrivers_example_MITgcm_llc
 
 
 Indices and tables
