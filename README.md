@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/raphaeldussin/DICRIVERS.svg?branch=master)](https://travis-ci.org/raphaeldussin/DICRIVERS) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/raphaeldussin/DICRIVERS/master)
+[![Build Status](https://travis-ci.org/raphaeldussin/DICRIVERS.svg?branch=master)](https://travis-ci.org/raphaeldussin/DICRIVERS) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/raphaeldussin/DICRIVERS/master) [![docs](https://readthedocs.org/projects/dicrivers/badge/?version=latest)](https://dicrivers.readthedocs.org/en/latest/?badge=latest)
+
 
 # DICRIVERS
 A preprocessing tool to specify river biogeochemistry input for ocean models
